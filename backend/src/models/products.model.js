@@ -6,7 +6,7 @@ const getAllProductsDataBase = async () => {
 };
 
 const getProductsById = async (id) => {
-  const [product] = await connection.execute('SELECT * FROM products WHERE id = ?', [id]);
+  const [[product]] = await connection.execute('SELECT * FROM products WHERE id = ?', [id]);
   return product;
 };
 
