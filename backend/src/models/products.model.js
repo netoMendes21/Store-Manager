@@ -10,4 +10,14 @@ const getProductsById = async (id) => {
   return product;
 };
 
-module.exports = { getAllProductsDataBase, getProductsById }; 
+const productAddDB = async (name) => {
+  const [product] = await connection.execute('INSERT INTO products (name) VALUES (?)', [name]);
+
+  const productAdd = {
+    id: product.insertId,
+    name,
+  };
+  return productAdd;
+};
+
+module.exports = { getAllProductsDataBase, getProductsById, productAddDB }; 

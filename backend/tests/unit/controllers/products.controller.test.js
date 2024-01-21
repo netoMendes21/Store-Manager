@@ -70,4 +70,13 @@ describe('Testando products controller', function () {
 
     stub.restore();
   });
+
+  it('É possível adicionar um produto ao DB', async function () {
+    const request = { body: { name: 'Holy Bible' } };
+    const response = { status: sinon.stub().returnsThis(), json: sinon.stub().returnsThis() };
+    const stub = sinon.stub(productsServices, 'productAddDbService').resolves(MOCK_SERVICES);
+    await productsController.controllerAddProduct(request, response);
+    expect(response.status).to.be.calledWith(201);
+    stub.restore();
+  });
 });

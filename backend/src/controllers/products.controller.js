@@ -22,4 +22,14 @@ const controllerProductById = async (request, response) => {
   }
 };
 
-module.exports = { controllerProducts, controllerProductById };
+const controllerAddProduct = async (request, response) => {
+  const { name } = request.body;
+  try {
+    const product = await productsServices.productAddDbService(name);
+    response.status(201).json(product);
+  } catch (error) {
+    response.status(500).json({ message: error.message });
+  }
+};
+
+module.exports = { controllerProducts, controllerProductById, controllerAddProduct };

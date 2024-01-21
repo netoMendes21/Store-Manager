@@ -27,9 +27,15 @@ const MOCK_SERVICES = {
   data: MOCK_ALL_PRODUCTS,
 };
 
+const PRODUCT_ADD_MOCK = {
+  id: 4, 
+  name: 'Holy Bible',
+};
+
 module.exports = {
   PRODUCT_1,
   MOCK_ALL_PRODUCTS,
   MOCK_SERVICES,
   PRODUCT_NOT_FOUND,
+  PRODUCT_ADD_MOCK,
 };

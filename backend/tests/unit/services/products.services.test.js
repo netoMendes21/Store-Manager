@@ -9,6 +9,7 @@ const {
   PRODUCT_1,
   MOCK_ALL_PRODUCTS,
   PRODUCT_NOT_FOUND,
+  PRODUCT_ADD_MOCK,
 } = require('../mocks/products.mock');
 
 describe('Products Service', function () {
@@ -43,6 +44,14 @@ describe('Products Service', function () {
     const result = await productModel.getProductsById(777);
 
     expect(result).to.be.deep.equal(PRODUCT_NOT_FOUND);
+
+    stub.restore();
+  });
+
+  it('É possível adicionar um produto ao DB', async function () {
+    const stub = sinon.stub(productModel, 'productAddDB').returns(PRODUCT_ADD_MOCK);
+    const addProduct = await productModel.productAddDB('Holy Bible');
+    expect(addProduct).to.be.deep.equal(PRODUCT_ADD_MOCK);
 
     stub.restore();
   });
