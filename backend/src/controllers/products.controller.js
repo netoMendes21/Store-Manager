@@ -7,7 +7,7 @@ const controllerProducts = async (_request, response) => {
   } catch (error) {
     response.status(500).json({ message: error.message });
   }
-};
+};  
 
 const controllerProductById = async (request, response) => {
   try {
