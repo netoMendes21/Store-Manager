@@ -79,4 +79,60 @@ describe('Testando products controller', function () {
     expect(response.status).to.be.calledWith(201);
     stub.restore();
   });
+  
+  describe('Produto adicionado ao DB com sucesso', function () {
+    it('Retorna o produto adicionado ao DB com a mensagem de sucesso', async function () {
+      const response = {
+        status: sinon.stub().returnsThis(),
+        json: sinon.stub().returnsThis(),
+      };
+      const request = {
+        body: {
+          name: 'Holy Bible',
+        },
+      };
+      const stub = sinon.stub(productsServices, 'productAddDbService').resolves(MOCK_SERVICES);
+      await productsController.controllerAddProduct(request, response);
+
+      expect(response.status).to.have.been.calledWith(201);
+      stub.restore();
+    });
+  });
+
+  describe('Quando não é possível adicionar o produto', function () {
+    it('Produto adicionado sem a chave name', async function () {
+      const response = {
+        status: sinon.stub().returnsThis(),
+        json: sinon.stub(),
+      };
+      const request = {
+        body: {},
+      };
+
+      const stub = sinon.stub(productsServices, 'productAddDbService').resolves(null);
+      
+      await productsController.controllerAddProduct(request, response);
+      expect(response.status).to.have.been.calledWith(400);
+      expect(response.json).to.have.been.calledWith({ message: '"name" is required' });
+      stub.restore();
+    });
+
+    it('Error por tentar adicionar um produto com menos de 5 caracteres', async function () {
+      const response = {
+        status: sinon.stub().returnsThis(),
+        json: sinon.stub(),
+      };
+      const request = {
+        body: {
+          name: 'node',
+        },
+      };
+      const stub = sinon.stub(productsServices, 'productAddDbService').resolves(null);
+      await productsController.controllerAddProduct(request, response);
+
+      expect(response.status).to.have.been.calledWith(422);
+      expect(response.json).to.have.been.calledWith({ message: '"name" length must be at least 5 characters long' });
+      stub.restore();
+    });
+  });
 });

@@ -4,6 +4,10 @@ const {
   SALE_MOCK_1,
   MOCK_ALL_SALES,
   NO_SALE_MOCK,
+  ADD_ONE_SALE_MOCK,
+  ADD_TWO_SALES_MOCK,
+  RESPONSE_ADD_ONE_SALE_MOCK,
+  RESPONSE_ADD_TWO_SALES_MOCK,
 } = require('../mocks/sales.mock');
 
 const { expect } = chai;
@@ -28,7 +32,7 @@ describe('Sales Models', function () {
   it('Não deve ser possível listar uma sale inexistente', async function () {
     const stub = sinon.stub(salesModels, 'getSalesId').returns(NO_SALE_MOCK);
 
-    const sale = await salesModels.getSalesId(666);
+    const sale = await salesModels.getSalesId(10);
 
     expect(sale).to.be.deep.equal(NO_SALE_MOCK);
     stub.restore();
@@ -39,6 +43,22 @@ describe('Sales Models', function () {
     const sale = await salesModels.getSalesId(1);
 
     expect(sale).to.be.deep.equal(SALE_MOCK_1);
+    stub.restore();
+  });
+  
+  it('Deve ser possível inserir uma sale', async function () {
+    const stub = sinon.stub(salesModels, 'addNewSale').returns(RESPONSE_ADD_ONE_SALE_MOCK);
+    const product = await salesModels.addNewSale(ADD_ONE_SALE_MOCK);
+  
+    expect(product).to.be.deep.equal(RESPONSE_ADD_ONE_SALE_MOCK);
+    stub.restore();
+  });
+  
+  it('Deve ser possível inserir duas sales', async function () {
+    const stub = sinon.stub(salesModels, 'addNewSale').returns(RESPONSE_ADD_TWO_SALES_MOCK);
+    const product = await salesModels.addNewSale(ADD_TWO_SALES_MOCK);
+  
+    expect(product).to.be.deep.equal(RESPONSE_ADD_TWO_SALES_MOCK);
     stub.restore();
   });
 });

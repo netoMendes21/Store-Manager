@@ -22,7 +22,20 @@ const controllerById = async (req, res) => {
   }
 };
 
+const addSale = async (req, res) => {
+  const sale = req.body;
+  try {
+    const addSaleId = await salesServices.addProductSale(sale);
+    const productsSold = await salesServices.getSalesServicesId(addSaleId)
+      .then((item) => item.map(({ productId, quantity }) => ({ productId, quantity })));
+    res.status(201).json({ id: addSaleId, itemsSold: productsSold });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 module.exports = {
   controllerAllSales,
   controllerById,
+  addSale,
 };

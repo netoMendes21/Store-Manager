@@ -12,6 +12,12 @@ const {
   SALE_MOCK_1,
   MOCK_ALL_SALES,
   NO_SALE_MOCK,
+  ADD_ONE_SALE_MOCK,
+  RESPONSE_ADD_ONE_SALE_MOCK,
+  RESPONSE_NEW_ADD_ONE_SALE_MOCK,
+  ADD_TWO_SALES_MOCK,
+  RESPONSE_ADD_TWO_SALES_MOCK,
+  RESPONSE_NEW_ADD_TWO_SALES_MOCK,
 } = require('../mocks/sales.mock');
 
 chai.use(chaiHttp);
@@ -75,6 +81,40 @@ describe('Testes para sales controller', function () {
   
       expect(response.status).to.have.been.calledWith(200);
       stub.restore();
+    });
+  });
+
+  describe('Sale adicionada com sucesso', function () {
+    it('É possível adicionar uma sale', async function () {
+      const req = {
+        body: ADD_ONE_SALE_MOCK,
+      };
+      const res = {
+        status: sinon.stub().returnsThis(),
+        json: sinon.stub().returnsThis(),
+      };
+      const stub = sinon.stub(salesServices, 'addProductSale').resolves(RESPONSE_ADD_ONE_SALE_MOCK);
+      const stubSecond = sinon.stub(salesServices, 'getSalesServicesId').resolves(RESPONSE_NEW_ADD_ONE_SALE_MOCK);
+      await salesControllers.addSale(req, res);
+      expect(res.status).to.have.been.calledWith(201);
+      stub.restore();
+      stubSecond.restore();
+    });
+
+    it('É possível adicionar duas sales', async function () {
+      const req = {
+        body: ADD_TWO_SALES_MOCK,
+      };
+      const res = {
+        status: sinon.stub().returnsThis(),
+        json: sinon.stub().returnsThis(),
+      };
+      const stub = sinon.stub(salesServices, 'addProductSale').resolves(RESPONSE_ADD_TWO_SALES_MOCK);
+      const stubSecond = sinon.stub(salesServices, 'getSalesServicesId').resolves(RESPONSE_NEW_ADD_TWO_SALES_MOCK);
+      await salesControllers.addSale(req, res);
+      expect(res.status).to.have.been.calledWith(201);
+      stub.restore();
+      stubSecond.restore();
     });
   });
 });
