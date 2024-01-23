@@ -1,7 +1,8 @@
 const chai = require('chai');
 const sinon = require('sinon');
+const connection = require('../../../src/models/connections');
 const { PRODUCT_1, MOCK_ALL_PRODUCTS, PRODUCT_ADD_MOCK,
-  UPDATE_MOCK_OUT } = require('../mocks/products.mock');
+  UPDATE_MOCK_OUT, MOCK_PRODUCT_NOT_FOUND } = require('../mocks/products.mock');
 
 const { expect } = chai;
 const ProductModel = require('../../../src/models/products.model');
@@ -57,11 +58,11 @@ describe('Products Model', function () {
 
   it('É impossível atualizar um nome de um produto inexistente', async function () {
     const stub = sinon.stub(ProductModel, 'productNameUpdate')
-      .returns({ status: 404, data: 'Product not found' });
+      .returns(MOCK_PRODUCT_NOT_FOUND);
 
     const product = await ProductModel.productNameUpdate(456, 'Açaí batido com morango');
 
-    expect(product).to.be.deep.equal({ status: 404, data: 'Product not found' });
+    expect(product).to.be.deep.equal(MOCK_PRODUCT_NOT_FOUND);
     stub.restore();
   });
 
@@ -81,6 +82,35 @@ describe('Products Model', function () {
     const product = await ProductModel.deleteProduct(1);
 
     expect(product).to.be.deep.equal({ status: 200, data: 'Product deleted successfully' });
+    stub.restore();
+  });
+
+  it('Deve ser possível listar todos os produtos por meio da connection mockada', async function () {
+    const stub = sinon.stub(connection, 'execute').resolves([MOCK_ALL_PRODUCTS]);
+
+    const products = await ProductModel.getAllProductsDataBase();
+
+    expect(products).to.be.an('array');
+    expect(products).to.be.deep.equal(MOCK_ALL_PRODUCTS);
+
+    stub.restore();
+  });
+
+  it('Deve ser possível pegar um produto pelo id por meio da connection mockada', async function () {
+    const stub = sinon.stub(connection, 'execute').resolves([[PRODUCT_1]]);
+    const product = await ProductModel.getProductsById(1);
+
+    expect(product).to.be.deep.equal(PRODUCT_1);
+    stub.restore();
+  });
+
+  it('Não deve ser possível remover um produto que não existe', async function () {
+    const stub = sinon.stub(ProductModel, 'deleteProduct')
+      .returns(MOCK_PRODUCT_NOT_FOUND);
+
+    const product = await ProductModel.deleteProduct(798);
+
+    expect(product).to.be.deep.equal(MOCK_PRODUCT_NOT_FOUND);
     stub.restore();
   });
 });

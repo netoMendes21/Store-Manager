@@ -41,6 +41,10 @@ const UPDATE_MOCK_OUT = {
   name: 'Açaí batido com morango',
 };
 
+const MOCK_PRODUCT_NOT_FOUND = {
+  status: 404, data: 'Product not found', 
+};
+
 module.exports = {
   PRODUCT_1,
   MOCK_ALL_PRODUCTS,
@@ -49,4 +53,5 @@ module.exports = {
   PRODUCT_ADD_MOCK,
   UPDATE_MOCK,
   UPDATE_MOCK_OUT,
+  MOCK_PRODUCT_NOT_FOUND,
 };

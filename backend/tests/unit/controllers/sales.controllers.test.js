@@ -42,6 +42,7 @@ describe('Testes para sales controller', function () {
       const stub = sinon.stub(salesServices, 'getAllSalesServicesDb').returns(MOCK_ALL_SALES);
       await salesControllers.controllerAllSales(request, response);
       expect(response.status).to.have.been.calledWith(200);
+      expect(response.json).to.have.been.calledWith(MOCK_ALL_SALES);
       stub.restore();
     });
   
@@ -59,6 +60,7 @@ describe('Testes para sales controller', function () {
       const stub = sinon.stub(salesServices, 'getSalesServicesId').returns(SALE_MOCK_1);
       await salesControllers.controllerById(request, response);
       expect(response.status).to.have.been.calledWith(200);
+      expect(response.json).to.have.been.calledWith(SALE_MOCK_1);
   
       stub.restore();
     });

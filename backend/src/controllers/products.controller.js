@@ -1,12 +1,8 @@
 const productsServices = require('../services/products.service');
 
 const controllerProducts = async (_request, response) => {
-  try {
-    const itens = await productsServices.allProducts();
-    response.status(200).json(itens);
-  } catch (error) {
-    response.status(500).json({ message: error.message });
-  }
+  const products = await productsServices.allProducts();
+  response.status(200).json(products);
 };  
 
 const controllerProductById = async (request, response) => {
@@ -31,7 +27,7 @@ const controllerAddProduct = async (request, response) => {
     return response.status(422)
       .json({ message: '"name" length must be at least 5 characters long' });
   }
-  const insertedProduct = await productsServices.productAddDbService(name); 
+  const insertedProduct = await productsServices.productAddDbService(name);
   response.status(201).json(insertedProduct);
 };
 
