@@ -3,6 +3,8 @@ const sinon = require('sinon');
 
 const productModel = require('../../../src/models/products.model');
 
+const productsServices = require('../../../src/services/products.service');
+
 const { expect } = chai;
 
 const {
@@ -21,7 +23,7 @@ describe('Products Service', function () {
   it('Lista todos os produtos da DB', async function () {
     const stub = sinon.stub(productModel, 'getAllProductsDataBase').returns(MOCK_ALL_PRODUCTS);
 
-    const result = await productModel.getAllProductsDataBase();
+    const result = await productsServices.allProducts();
 
     expect(result).to.be.an('array');
     expect(result).to.be.deep.equal(MOCK_ALL_PRODUCTS);
@@ -32,7 +34,7 @@ describe('Products Service', function () {
   it('É possível pegar um produto pelo seu id', async function () {
     const stub = sinon.stub(productModel, 'getProductsById').returns(PRODUCT_1);
 
-    const result = await productModel.getProductsById(1);
+    const result = await productsServices.productsByID(1);
 
     expect(result).to.be.deep.equal(PRODUCT_1);
 
@@ -85,6 +87,27 @@ describe('Products Service', function () {
     const result = await productModel.productNameUpdate(54, 'Aça');
 
     expect(result).to.be.deep.equal({ status: 422, data: '"name" length must be at least 5 characters long' });
+
+    stub.restore();
+  });
+
+  it('Deve ser possível remover um produto', async function () {
+    const stub = sinon.stub(productModel, 'deleteProduct').returns(null);
+
+    const result = await productModel.deleteProduct(1);
+
+    expect(result).to.be.deep.equal(null);
+
+    stub.restore();
+  });
+
+  it('Não é possível deletar um produto inexistente', async function () {
+    const stub = sinon.stub(productModel, 'deleteProduct')
+      .returns({ status: 404, data: 'Product not found' });
+
+    const result = await productModel.deleteProduct(446);
+
+    expect(result).to.be.deep.equal({ status: 404, data: 'Product not found' });
 
     stub.restore();
   });

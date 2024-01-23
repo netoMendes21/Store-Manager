@@ -220,4 +220,23 @@ describe('Testando products controller', function () {
       stub.restore();
     });
   });
+
+  describe('Quando o produto é deletado com sucesso', function () {
+    it('Retorna uma mensagem de sucesso ao deletar um produto', async function () {
+      const res = {
+        status: sinon.stub().returnsThis(),
+        json: sinon.stub().returnsThis(),
+      };
+      const req = {
+        params: {
+          id: 1,
+        },
+      };
+      const stub = sinon.stub(productsServices, 'deleteProductService').resolves(null);
+      await productsController.removeProductController(req, res);
+
+      expect(res.status).to.have.been.calledWith(204);
+      stub.restore();
+    });
+  });
 });

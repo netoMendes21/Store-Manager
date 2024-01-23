@@ -74,4 +74,13 @@ describe('Products Model', function () {
     expect(product).to.be.deep.equal({ status: 422, data: '"name" length must be at least 5 characters long' });
     stub.restore();
   });
+
+  it('É possível remover um produto', async function () {
+    const stub = sinon.stub(ProductModel, 'deleteProduct').returns({ status: 200, data: 'Product deleted successfully' });
+
+    const product = await ProductModel.deleteProduct(1);
+
+    expect(product).to.be.deep.equal({ status: 200, data: 'Product deleted successfully' });
+    stub.restore();
+  });
 });
