@@ -19,11 +19,7 @@ describe('Testando products controller', function () {
   });
   
   it('Retorna todos os produtos da DB', async function () {
-    const request = {
-      params: {
-        id: 1,
-      },
-    };
+    const request = { params: { id: 1 } };
     const response = {
       status: sinon.stub().returnsThis(),
       json: sinon.stub().returnsThis(),
@@ -40,11 +36,7 @@ describe('Testando products controller', function () {
       status: sinon.stub().returnsThis(),
       json: sinon.stub().returnsThis(),
     };
-    const request = {
-      params: {
-        id: 1,
-      },
-    };
+    const request = { params: { id: 1 } };
     const stub = sinon.stub(productsServices, 'productsByID').resolves(PRODUCT_1);
     await productsController.controllerProductById(request, response);
     expect(response.status).to.have.been.calledWith(200);
@@ -57,11 +49,7 @@ describe('Testando products controller', function () {
       status: sinon.stub().returnsThis(),
       json: sinon.stub().returnsThis(),
     };
-    const request = {
-      params: {
-        id: 1,
-      },
-    };
+    const request = { params: { id: 1 } };
 
     const stub = sinon.stub(productsServices, 'productsByID').resolves(MOCK_ALL_PRODUCTS);
     await productsController.controllerProductById(request, response);
@@ -222,21 +210,35 @@ describe('Testando products controller', function () {
   });
 
   describe('Quando o produto é deletado com sucesso', function () {
-    it('Retorna uma mensagem de sucesso ao deletar um produto', async function () {
-      const res = {
+    it('Retorna uma mensagem de sucesso', async function () {
+      const response = {
         status: sinon.stub().returnsThis(),
         json: sinon.stub().returnsThis(),
       };
-      const req = {
-        params: {
-          id: 1,
-        },
-      };
-      const stub = sinon.stub(productsServices, 'deleteProductService').resolves(null);
-      await productsController.removeProductController(req, res);
+      const request = { params: { id: 1 } };
+      const stub = sinon.stub(productsServices, 'deleteProductService').resolves(PRODUCT_1);
+      await productsController.removeProductController(request, response);
 
-      expect(res.status).to.have.been.calledWith(204);
+      expect(response.status).to.have.been.calledWith(204);
       stub.restore();
+      sinon.restore();
+    });
+  });
+
+  describe('Quando o produto não é deletado com sucesso', function () {
+    it('Quando o produto é recebido com uma string vazia', async function () {
+      const response = {
+        status: sinon.stub().returnsThis(),
+        json: sinon.stub(),
+      };
+      const request = { params: { id: 1 } };
+      const stub = sinon.stub(productsServices, 'deleteProductService').resolves(null);
+      await productsController.removeProductController(request, response);
+
+      expect(response.status).to.have.been.calledWith(404);
+      expect(response.json).to.have.been.calledWith({ message: 'Product not found' });
+      stub.restore();
+      sinon.restore();
     });
   });
 });

@@ -72,6 +72,12 @@ const RESPONSE_NEW_ADD_TWO_SALES_MOCK = [
   },
 ];
 
+const MOCK_UPDATE_SALE = {
+  saleId: 3,
+  productId: 3,
+  quantity: 23,
+};
+
 const NO_SALE_MOCK = { status: 404, data: { message: 'Product not found' } };
 
 module.exports = {
@@ -84,4 +90,5 @@ module.exports = {
   RESPONSE_ADD_TWO_SALES_MOCK,
   RESPONSE_NEW_ADD_ONE_SALE_MOCK,
   RESPONSE_NEW_ADD_TWO_SALES_MOCK,
+  MOCK_UPDATE_SALE,
 };

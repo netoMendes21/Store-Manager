@@ -95,4 +95,45 @@ describe('Sales Models', function () {
 
     stub.restore();
   });
+
+  it('Deve ser possível inserir uma sale utilizando a connection mockada', async function () {
+    const mockNewSale = { id: 3 };
+    const stub = sinon.stub(connection, 'execute').resolves([{ id: 3 }]);
+
+    const products = await salesModels.addNewSale();
+
+    expect(products).to.be.an('object');
+    expect(products).to.be.deep.equal(mockNewSale);
+
+    stub.restore();
+  });
+
+  it('Deve ser possível conseguir uma única sale pelo id utilizando a connection mockada', async function () {
+    const stub = sinon.stub(connection, 'execute').resolves([SALE_MOCK_1]);
+
+    const product = await salesModels.getSalesId(1);
+
+    expect(product).to.be.deep.equal(SALE_MOCK_1);
+    stub.restore();
+  });
+
+  it('Deve ser possível inserir itens em uma sale por meio da connection mockada', async function () {
+    const stub = sinon.stub(connection, 'execute');
+    const mockSaleId = 3;
+    const mockSaleProducts = [{ productId: 3, quantity: 15 }];
+    const mockResponse = [{}];
+    stub.resolves(mockResponse);
+
+    const response = await salesModels.addProductSale(mockSaleId, mockSaleProducts);
+
+    expect(response).to.deep.equal([mockResponse]);
+
+    sinon.assert.calledOnceWithExactly(
+      stub,
+      'INSERT INTO sales_products (sale_id, product_id, quantity) VALUES (?, ?, ?)',
+      [mockSaleId, 3, 15],
+    );
+
+    stub.restore();
+  });
 });

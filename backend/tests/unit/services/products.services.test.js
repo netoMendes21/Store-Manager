@@ -44,7 +44,7 @@ describe('Products Service', function () {
   it('Não é possível pegar um produto com id inexistente', async function () {
     const stub = sinon.stub(productModel, 'getProductsById').returns(PRODUCT_NOT_FOUND);
 
-    const result = await productModel.getProductsById(777);
+    const result = await productsServices.productsByID(777);
 
     expect(result).to.be.deep.equal(PRODUCT_NOT_FOUND);
 
@@ -60,13 +60,17 @@ describe('Products Service', function () {
   });
 
   it('É possível atualizar o nome de um produto', async function () {
-    const stub = sinon.stub(productModel, 'productNameUpdate').returns(UPDATE_MOCK_OUT);
+    sinon.stub(productModel, 'getProductsById')
+      .onFirstCall()
+      .returns(PRODUCT_1)
+      .onSecondCall()
+      .returns(UPDATE_MOCK_OUT);
 
-    const result = await productModel.productNameUpdate(1, 'Açaí batido com morango');
+    sinon.stub(productModel, 'productNameUpdate').returns(Promise.resolve());
 
-    expect(result).to.be.deep.equal(UPDATE_MOCK_OUT);
+    const result = await productsServices.productNameUpdateServices(PRODUCT_1);
 
-    stub.restore();
+    expect(result).to.be.equal(UPDATE_MOCK_OUT);
   });
 
   it('É impossível atualizar um nome de um produto inexistente', async function () {
@@ -91,7 +95,7 @@ describe('Products Service', function () {
     stub.restore();
   });
 
-  it('Deve ser possível remover um produto', async function () {
+  it('É possível deletar um produto', async function () {
     const stub = sinon.stub(productModel, 'deleteProduct').returns(null);
 
     const result = await productModel.deleteProduct(1);
@@ -102,12 +106,25 @@ describe('Products Service', function () {
   });
 
   it('Não é possível deletar um produto inexistente', async function () {
-    const stub = sinon.stub(productModel, 'deleteProduct')
-      .returns({ status: 404, data: 'Product not found' });
+    sinon.stub(productModel, 'getProductsById').returns(null);
 
-    const result = await productModel.deleteProduct(446);
+    try {
+      await productsServices.productNameUpdateServices(156, 'Açaí batido com morango');
+    } catch (err) {
+      expect(err).to.be.an('error');
+      expect(err.message).to.be.equal('Product not found');
+    }
+  });
 
-    expect(result).to.be.deep.equal({ status: 404, data: 'Product not found' });
+  it('Não deve ser possível adicionar um produto com nome inválido', async function () {
+    const stub = sinon.stub(productModel, 'productAddDB').returns(null);
+
+    try {
+      await productsServices.productAddDbService('');
+    } catch (err) {
+      expect(err).to.be.an('error');
+      expect(err.message).to.be.equal('Product name is required');
+    }
 
     stub.restore();
   });

@@ -59,10 +59,10 @@ const productNameUpdateController = async (request, response) => {
 const removeProductController = async (req, res) => {
   const { id } = req.params;
   try {
-    if (idValidator(id)) {
+    const productDeletion = await productsServices.deleteProductService(id);
+    if (!productDeletion) {
       return res.status(404).json({ message: 'Product not found' });
     }
-    await productsServices.deleteProductService(id);
     res.status(204).end();
   } catch (error) {
     res.status(404).json({ message: error.message });
