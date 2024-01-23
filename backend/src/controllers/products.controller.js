@@ -35,4 +35,33 @@ const controllerAddProduct = async (request, response) => {
   response.status(201).json(insertedProduct);
 };
 
-module.exports = { controllerProducts, controllerProductById, controllerAddProduct };
+const idValidator = (id) => !id || id === undefined;
+
+const nameValidator = (name) => !name || name === undefined;
+
+const productNameUpdateController = async (request, response) => {
+  const { id } = request.params;
+  const { name } = request.body;
+  try {
+    if (idValidator(id)) {
+      return response.status(404).json({ message: 'Product not found' });
+    }
+    if (nameValidator(name)) {
+      return response.status(400).json({ message: '"name" is required' });
+    }
+    if (name.length < 5) {
+      return response.status(422)
+        .json({ message: '"name" length must be at least 5 characters long' });
+    }
+    const productUpdate = await productsServices.productNameUpdateServices(id, name);
+    response.status(200).json(productUpdate); 
+  } catch (error) {
+    response.status(404).json({ message: error.message });
+  }
+};
+
+module.exports = { 
+  controllerProducts, 
+  controllerProductById, 
+  controllerAddProduct,
+  productNameUpdateController };

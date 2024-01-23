@@ -32,10 +32,21 @@ const PRODUCT_ADD_MOCK = {
   name: 'Holy Bible',
 };
 
+const UPDATE_MOCK = {
+  name: 'Açaí batido com morango',
+};
+
+const UPDATE_MOCK_OUT = {
+  id: 1,
+  name: 'Açaí batido com morango',
+};
+
 module.exports = {
   PRODUCT_1,
   MOCK_ALL_PRODUCTS,
   MOCK_SERVICES,
   PRODUCT_NOT_FOUND,
   PRODUCT_ADD_MOCK,
+  UPDATE_MOCK,
+  UPDATE_MOCK_OUT,
 };

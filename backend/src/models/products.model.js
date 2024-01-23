@@ -20,4 +20,10 @@ const productAddDB = async (name) => {
   return productAdd;
 };
 
-module.exports = { getAllProductsDataBase, getProductsById, productAddDB }; 
+const productNameUpdate = async (id, name) => {
+  const [product] = await connection
+    .execute('UPDATE products SET name = ? WHERE id = ?', [name, id]);
+  return product;
+};
+
+module.exports = { getAllProductsDataBase, getProductsById, productAddDB, productNameUpdate }; 

@@ -135,4 +135,89 @@ describe('Testando products controller', function () {
       stub.restore();
     });
   });
+
+  describe('Quando o produto é atualizado com sucesso', function () {
+    it('Retorna o produto atualizado', async function () {
+      const response = {
+        status: sinon.stub().returnsThis(),
+        json: sinon.stub().returnsThis(),
+      };
+      const request = {
+        params: {
+          id: 1,
+        },
+        body: {
+          name: 'Açaí batido com morango',
+        },
+      };
+      const stub = sinon.stub(productsServices, 'productNameUpdateServices').resolves();
+      await productsController.productNameUpdateController(request, response);
+
+      expect(response.status).to.have.been.calledWith(200);
+      stub.restore();
+    });
+  });
+
+  describe('Quando há uma falha na atualização do produto', function () {
+    it('Sem colocar o nome', async function () {
+      const response = {
+        status: sinon.stub().returnsThis(),
+        json: sinon.stub(),
+      };
+      const request = {
+        params: {
+          id: 1,
+        },
+        body: {},
+      };
+      const stub = sinon.stub(productsServices, 'productNameUpdateServices').resolves(null);
+      await productsController.productNameUpdateController(request, response);
+
+      expect(response.status).to.have.been.calledWith(400);
+      expect(response.json).to.have.been.calledWith({ message: '"name" is required' });
+      stub.restore();
+    });
+
+    it('Nome com menos de 5 caracteres', async function () {
+      const response = {
+        status: sinon.stub().returnsThis(),
+        json: sinon.stub(),
+      };
+      const request = {
+        params: {
+          id: 1,
+        },
+        body: {
+          name: 'FBI',
+        },
+      };
+      const stub = sinon.stub(productsServices, 'productNameUpdateServices').resolves(null);
+      await productsController.productNameUpdateController(request, response);
+
+      expect(response.status).to.have.been.calledWith(422);
+      expect(response.json).to.have.been.calledWith({ message: '"name" length must be at least 5 characters long' });
+      stub.restore();
+    });
+
+    it('Produto não encontrado', async function () {
+      const response = {
+        status: sinon.stub().returnsThis(),
+        json: sinon.stub(),
+      };
+      const request = {
+        params: {
+          id: 1,
+        },
+        body: {
+          name: 'Açaí batido com morango',
+        },
+      };
+      const stub = sinon.stub(productsServices, 'productNameUpdateServices').resolves({ message: 'Product not found' });
+      await productsController.productNameUpdateController(request, response);
+
+      expect(response.status).to.have.been.calledWith(200);
+      expect(response.json).to.have.been.calledWith({ message: 'Product not found' });
+      stub.restore();
+    });
+  });
 });

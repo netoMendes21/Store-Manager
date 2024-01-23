@@ -1,6 +1,7 @@
 const chai = require('chai');
 const sinon = require('sinon');
-const { PRODUCT_1, MOCK_ALL_PRODUCTS, PRODUCT_ADD_MOCK } = require('../mocks/products.mock');
+const { PRODUCT_1, MOCK_ALL_PRODUCTS, PRODUCT_ADD_MOCK,
+  UPDATE_MOCK_OUT } = require('../mocks/products.mock');
 
 const { expect } = chai;
 const ProductModel = require('../../../src/models/products.model');
@@ -43,6 +44,34 @@ describe('Products Model', function () {
     const addProduct = await ProductModel.productAddDB('Holy Bible');
     expect(addProduct).to.be.deep.equal(PRODUCT_ADD_MOCK);
 
+    stub.restore();
+  });
+
+  it('É possível atualizar um nome de produto', async function () {
+    const stub = sinon.stub(ProductModel, 'productNameUpdate').returns(UPDATE_MOCK_OUT);
+    const product = await ProductModel.productNameUpdate(1, 'Açaí batido com morango');
+
+    expect(product).to.be.deep.equal(UPDATE_MOCK_OUT);
+    stub.restore();
+  });
+
+  it('É impossível atualizar um nome de um produto inexistente', async function () {
+    const stub = sinon.stub(ProductModel, 'productNameUpdate')
+      .returns({ status: 404, data: 'Product not found' });
+
+    const product = await ProductModel.productNameUpdate(456, 'Açaí batido com morango');
+
+    expect(product).to.be.deep.equal({ status: 404, data: 'Product not found' });
+    stub.restore();
+  });
+
+  it('Não é possível atualizar o nome de um produto que tenha um nome com menos de 5 caracteres', async function () {
+    const stub = sinon.stub(ProductModel, 'productNameUpdate')
+      .returns({ status: 422, data: '"name" length must be at least 5 characters long' });
+
+    const product = await ProductModel.productNameUpdate(69, 'Aça');
+
+    expect(product).to.be.deep.equal({ status: 422, data: '"name" length must be at least 5 characters long' });
     stub.restore();
   });
 });
